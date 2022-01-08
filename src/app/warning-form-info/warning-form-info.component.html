@@ -1,1 +1,14 @@
-{{ warning }}
+<div class="warnings" *ngIf="warning | async as warning">
+  <ng-container *ngIf="warningsMessages(warning) as warningsMessages">
+    <div>Warnings:</div>
+    <div *ngFor="let warningMessage of warningsMessages">
+      {{ warningMessage }}
+    </div>
+  </ng-container>
+</div>
+<div class="errors" *ngIf="errorMessages">
+  <div>Errors:</div>
+  <div *ngFor="let errorMessage of errorMessages">
+    {{ errorMessage }}
+  </div>
+</div>

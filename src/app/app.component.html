@@ -3,9 +3,11 @@
   <input type="text" class="form-control" formControlName="firstName" />
   <!--we can't use formControlName: No value accessor for form control with name: 'firstName'-->
   <app-warning-form-info controlName="firstName"></app-warning-form-info>
+
   <br />
   <label> Last name </label>
   <input type="text" class="form-control" formControlName="lastName" />
+  <app-warning-form-info controlName="lastName"></app-warning-form-info>
 </div>
 
-Valid form: {{ validFirstNameControl }}
+Valid form: {{ validForm }}
