@@ -64,6 +64,7 @@ export class AppComponent {
     const warningFn = (
       control: AbstractControlWarning
     ): ValidationErrors | null => {
+      //onsole.log(getControlValidators(control));
       control.warnings ??= new BehaviorSubject<WarningMessageType>(null);
       var result = validatorFn(control);
       if (result !== null) {
