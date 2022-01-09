@@ -1,7 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { AbstractControl, ControlContainer } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { AbstractControlWarning } from '../app.component';
+import { AbstractControlWarning } from '../utils/warning-form.utils';
 
 @Component({
   selector: 'app-warning-form-info',
@@ -9,10 +15,17 @@ import { AbstractControlWarning } from '../app.component';
   styleUrls: ['./warning-form-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WarningFormInfoComponent {
+export class WarningFormInfoComponent implements OnInit {
   @Input() controlName!: string;
 
-  constructor(private _formContainer: ControlContainer) {}
+  constructor(
+    private _formContainer: ControlContainer,
+    private _cd: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this._control?.statusChanges.subscribe((_) => this._cd.detectChanges());
+  }
 
   public get warning(): Observable<WarningMessageType> {
     const warnings$ = (this._control as AbstractControlWarning)?.warnings;

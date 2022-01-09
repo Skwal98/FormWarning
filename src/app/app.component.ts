@@ -9,8 +9,7 @@ import {
   ValidationErrors,
   ValidatorFn,
 } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import { WarningMessageType } from './warning-form-info/warning-form-info.component';
+import { warningValidators } from './utils/warning-form.utils';
 
 @Component({
   selector: 'app-root',
@@ -23,8 +22,12 @@ export class AppComponent {
 
   profileForm = this._fb.group({
     firstName: this._fb.control('', [
+      warningValidators([
+        this.forbiddenNameValidator(),
+        this.digitNameValidator(),
+        this.forbiddenNameAbc(),
+      ]),
       this.forbiddenNameValidator(),
-      this.warningValidator(this.digitNameValidator()),
     ]),
     lastName: this._fb.control('', [
       this.forbiddenNameValidator(),
@@ -51,37 +54,21 @@ export class AppComponent {
     };
   }
 
+  forbiddenNameAbc(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value === '1234') {
+        return { abc: { value: 'invalid' } };
+      }
+      return null;
+    };
+  }
+
   digitNameValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === '123456789') {
+      if (control.value === '123456') {
         return { diginName: { value: 'digitFormat' } };
       }
       return null;
     };
   }
-
-  warningValidator(validatorFn: ValidatorFn): ValidatorFn {
-    const warningFn = (
-      control: AbstractControlWarning
-    ): ValidationErrors | null => {
-      //onsole.log(getControlValidators(control));
-      control.warnings ??= new BehaviorSubject<WarningMessageType>(null);
-      var result = validatorFn(control);
-      if (result !== null) {
-        control.warnings.next(result);
-      } else {
-        control.warnings.next(control.warnings.value);
-      }
-      return null;
-    };
-    return warningFn as ValidatorFn;
-  }
-}
-
-export interface AbstractControlWarning extends AbstractControl {
-  warnings: BehaviorSubject<WarningMessageType>;
-}
-
-export interface WarningFn {
-  (control: AbstractControlWarning): ValidationErrors | null;
 }
